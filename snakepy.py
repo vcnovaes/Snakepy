@@ -16,8 +16,14 @@ def direct(k):
         d = 2
     return (d)
 
+def oposite_d(up,down,left,right,dir, l_dir):
+    return ((dir == up and l_dir == down)
+            or (dir == down and l_dir == up)
+            or (dir == left and  l_dir == right)
+            or (dir == right and l_dir == left)
+            )
 
-
+last_dir = 10
 score = 0
 up = 0
 down = 1
@@ -67,6 +73,8 @@ while run:
 
         if event.type == KEYDOWN:
             dir = direct(event.key)
+            if dir == 8:
+                pass
 
 
 
@@ -82,10 +90,17 @@ while run:
         snake[0] = (snake[0][0] + 10, snake[0][1])
     elif dir == 8:
         screen.fill((0,0,0))
+        pygame.event.clear()
         screen.blit(game_over, [0,0])
+        pygame.time.wait(800)
         pygame.display.flip()
-        pygame.time.wait(8000)
-        print('GAME OVER')
+        i = 3
+        while i< len(snake):
+            snake.pop(i)
+        snake[0] = (260, 200)
+        score = 0
+        pygame.event.wait()
+
 
 
     for i in range(len(snake)-1,0,-1):
@@ -103,7 +118,8 @@ while run:
         dir = 8
     if snake[0][0] <= x and snake[0][1] == y-20:
         dir = 8
-
+    elif oposite_d(up,down,left,right,dir,last_dir):
+        dir = last_dir
     screen.blit(food,p_food)
 
     if colisao(snake[0], p_food):
@@ -128,3 +144,4 @@ while run:
         #print(pos)
         screen.blit(skin, pos)
     pygame.display.update()
+    last_dir = dir
